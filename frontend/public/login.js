@@ -1,14 +1,31 @@
+let usernameInput;
+let passwordInput;
+let loginBTN;
+
 //Form login
 function form_login(){
+  
+  const colorInput = color('#374592');
+  const colorButtonLogin = color('#000D4F');
+  const colorText = color('#ffffff');
+
+  //Style input email or username
   usernameInput = createInput('');
+  usernameInput.style('background-color', colorInput);
   usernameInput.size(250,30);
   usernameInput.position(width/2.5,height/2.4);
 
+  //Style input password
   passwordInput = createInput('');
+  passwordInput.style('background-color', colorInput);
   passwordInput.size(250,30);
   passwordInput.position(width/2.5,height/2);
 
+  //Style button login
   loginBTN = createButton('Login');
+  loginBTN.style('background-color', colorButtonLogin);
+  loginBTN.style('color', colorText);
+  loginBTN.style('font-size', 130 + '%');
   loginBTN.position(width/2.3,height/1.76);
   loginBTN.size(150, 40)
   loginBTN.mousePressed(doLogin)
@@ -24,7 +41,7 @@ function doLogin(){
     "password": password
   }
   if (userData.username == "" || typeof(userData.username) != 'string' || userData.password == ""){
-    alert("Username or Password wrong!")
+    alert("Username or Password wrong!");
     form_register();
   } 
   else {
@@ -38,7 +55,7 @@ function doLogin(){
   }
 }
 
-//Initial scene /login and register
+//Initial scene / login and register
 function homeScene(){
   push()
   textAlign(CENTER);
