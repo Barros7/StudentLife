@@ -264,7 +264,7 @@ function drawQuestions(){
   for(let j=0;j<maxnum;j++){
     butArray[j]= new choiceButton(width/2,height/1.2+butheight,10,responsesUploaded[j].texto,responsesUploaded[j].texto.length)
     butArray[j].draw_Button();
-    butheight+=35
+    butheight += 35;
 
   }
   
@@ -507,7 +507,7 @@ class backButton{
   }
 
   click_Button(x,y){
-    if(x>this.x-this.sx/2 && x<this.x+this.sx/2 && y>this.y-this.sy/2 && y<this.y+this.sy/2) {
+    if(x > this.x - this.sx / 2 && x<this.x+this.sx/2 && y>this.y-this.sy/2 && y<this.y+this.sy/2) {
       return true;
     }else{
       return false;

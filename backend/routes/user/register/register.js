@@ -1,15 +1,17 @@
 const router = require('express').Router();
-const csprng = require('csprng');             //Include csprng variables for strong passsword
 const sha = require('sha.js');             //Include sha variables for strong passsword
 const connectionDB = require('../../../database/db');  //invoke database conection
 
+/*
 //register
 router.get('/register', (req, res) => {
     //res.render('register');
   });
+  */
   
   //Create register of user
   router.post('/register', async (req, res)=>{
+    console.log(req);
     //received values from frontend and save in variables
     const academicLevel = req.body.level;
     const age = req.body.age;
@@ -23,15 +25,14 @@ router.get('/register', (req, res) => {
     const salary = req.body.salary;
     const image = req.body.image;
 
+
     //verify if username or password is empty
     (username == '' || password == '') ? console.log("Username or Password required!"):
-    sha256 = sha('sha256');
-    passwordSalt = csprng(256, 36);
-    passwordSalt = sha256.update(passwordSalt).digest('hex');
+    
+    passwordSalt = 12;
     sha256 = sha('sha256');
     passwordHash = sha256.update(password + passwordSalt).digest('hex');
-    console.log(req.body)
-    console.log("passwordHash " + passwordHash)
+    
     //Save the values on database
     connectionDB.query('INSERT INTO students SET ? ', {
       Academic_Level: academicLevel,

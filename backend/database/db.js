@@ -1,5 +1,5 @@
 const mysql = require("mysql"); //Include mysql dependence on node modules.
-//Database connection
+
 const connectionDB = mysql.createConnection({
     database: process.env.DATABASE,
     host: process.env.DATABASE_HOST,

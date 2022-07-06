@@ -1,41 +1,43 @@
-const express = require("express");             //Include express dependence on node modules.
-const path = require('path');
-const dotEnv = require("dotenv");               //Include dotenv variables for sensetive information.
-const sha = require('sha.js');             //Include sha variables for strong passsword
-const bodyParser = require("body-parser");      //Include body-parser dependence 
-const session = require("express-session");     //Invoke express-session module for validate user session
-const connectionDB = require('./database/db');  //invoke database conection
-const port = 3000;
+const EXPRESS = require("express"); //Include express dependence on node modules.
+const PATH = require('path'); //Include path module for working with file and directory.
+const DOT_ENV = require("dotenv"); //Include dotenv variables for sensetive information.
+const SHA = require('sha.js'); //Include sha variables for hash calculate (strong passsword).
+const BODY_PARSER = require("body-parser"); //Include body-parser dependence.
+const SESSION = require("express-session"); //Invoke express-session module for validate user session.
+const CONNECTION_DATABASE = require('./database/db'); //Invoke database conection.
+const PORT = 3000; 
 
-dotEnv.config({path: './env/.env'}); //Location directory enviroment variables
+DOT_ENV.config({PATH: './env/.env'}); //Location directory enviroment variables.
 
-const app = express();
+const app = EXPRESS();
 
 //Use database
-connectionDB.query('USE studentlife');
+CONNECTION_DATABASE.query('USE studentlife');
 
 //url encode for get data form
-app.use(express.urlencoded({
+app.use(EXPRESS.urlencoded({
   extended:false
 }));
 
-app.use(express.json());
+app.use(EXPRESS.json());
 
-app.use(session({
+app.use(SESSION({
   secret: 'secret',
   resave: true,
   saveUninitialized: true
 })); 
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(BODY_PARSER.urlencoded({ extended: false }))
  
 // parse application/json
-app.use(bodyParser.json())
+app.use(BODY_PARSER.json())
 
-app.use(express.static('../frontend/public'))
+app.use(EXPRESS.static('../frontend/public'))
 
-//================= Routes ====================
+/*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+                  Routes
+««««««««««««««««««««««««««««««««««««««««««««*/
 
 //Login
 app.get('/login', (req, res)=>{
@@ -52,52 +54,49 @@ app.get('/logout', (req, res)=>{
 
 //Authenticate
 app.post('/auth', async(req, res)=>{
-  const username = req.body.username;
-  const password = req.body.password;
-  
-  if(username && password){
-    connectionDB.query('SELECT * FROM students WHERE Username = ? or Email = ?', [username, username], async (error, results, fields)=>{
-      if (results.length > 0){
-        let sha256 = sha('sha256');
-        let passwordSalt = results[0].salt;
-        let passwordHash = sha256.update(password + passwordSalt).digest('hex');
-        if(results.length == 0 || !(passwordHash == results[0].Password)){
-          console.log("Username or Password incorrect");
-          res.json({
-            message: "Username or Password incorrect"
-          });
-        }
-        else{
-          req.session.loggedin = true;
-          req.session.Age = results[0].Age;
-          req.session.Life = results[0].Life;
-          req.session.Money = results[0].Money;
-          req.session.Salary = results[0].Salary;
-          req.session.Emotion = results[0].Emotion;
-          req.session.Username = results[0].Username;
-          req.session.Id_Student = results[0].Id_Student;
-          req.session.Academic_Level = results[0].Academic_Level;
-  
-          res.json({
-            "age":req.session.Age,
-            "life":req.session.Life,
-            "money":req.session.Money,
-            "salary":req.session.Salary,
-            "emotion":req.session.Emotion,
-            "username":req.session.Username,
-            "id_stundent":req.session.Id_Student,
-            "academic_level":req.session.Academic_Level,
-          });
-          console.log(req.session);
-        }
-        res.end();
+  const USERNAME = req.body.username;
+  const PASSWORD = req.body.password;
+
+  if(USERNAME && PASSWORD){
+    CONNECTION_DATABASE.query('SELECT * FROM students WHERE Username = ?', [USERNAME], async (error, results, fields)=>{
+      let sha256 = SHA('sha256');
+      let passwordSalt = results[0].salt;
+      let passwordHash = sha256.update(PASSWORD + passwordSalt).digest('hex');
+      
+      console.log(results[0].Password);
+      console.log(passwordHash);
+
+      if(results.length === 0 || !(passwordHash == results[0].Password)){
+        console.log("Username or Password incorrect");
+        res.json({
+          message: "Username or Password incorrect",
+          statusCode: 403
+        });
       }
-      else {
-        console.log("User not found");
-          res.json({
-            message: "User not found"
-          });
+      else{
+        req.session.loggedin = true;
+        req.session.Age = results[0].Age;
+        req.session.Life = results[0].Life;
+        req.session.Money = results[0].Money;
+        req.session.Salary = results[0].Salary;
+        req.session.Emotion = results[0].Emotion;
+        req.session.Username = results[0].Username;
+        req.session.Id_Student = results[0].Id_Student;
+        req.session.Academic_Level = results[0].Academic_Level;
+
+        res.json({
+          "age": req.session.Age,
+          "life": req.session.Life,
+          "money": req.session.Money,
+          "salary": req.session.Salary,
+          "emotion": req.session.Emotion,
+          "username": req.session.Username,
+          "id_stundent": req.session.Id_Student,
+          "academic_level": req.session.Academic_Level,
+        });
+        console.log(req.session);
       }
+      res.end();
     });
   }
   else{
@@ -123,28 +122,29 @@ app.get('/', (req, res)=>{
 });
 
 //inport file from route folder
-const userRoutes = require('./routes/user/register/register');
-const animalRoutes = require('./routes/buy_animal/buy_animal');
-const carRoutes = require('./routes/buy_car/buy_car');
-const companyRoutes = require('./routes/buy_company/buy_company');
-const eatRoutes = require('./routes/buy_eat/buy_eat');
-const houseRoutes = require('./routes/buy_house/buy_house');
-const testRoutes = require('./routes/do_test/do_test');
-const universityRoutes = require('./routes/subscribe_university/subscribe_university');
-app.use('/', userRoutes);
-app.use('/', animalRoutes);
-app.use('/', carRoutes);
-app.use('/', companyRoutes);
-app.use('/', eatRoutes);
-app.use('/', houseRoutes);
-app.use('/', testRoutes);
-app.use('/', universityRoutes);
+const USER_ROUTES = require('./routes/user/register/register');
+const ANIMAL_ROUTES = require('./routes/buy_animal/buy_animal');
+const CAR_ROUTES = require('./routes/buy_car/buy_car');
+const COMPANY_ROUTES = require('./routes/buy_company/buy_company');
+const EAT_ROUTES = require('./routes/buy_eat/buy_eat');
+const HOUSE_ROUTES = require('./routes/buy_house/buy_house');
+const UNIVERSITY_ROUTES = require('./routes/subscribe_university/subscribe_university');
+const TEST_ROUTES = require('./routes/do_test/do_test');
+
+app.use('/', USER_ROUTES);
+app.use('/', ANIMAL_ROUTES);
+app.use('/', CAR_ROUTES);
+app.use('/', COMPANY_ROUTES);
+app.use('/', EAT_ROUTES);
+app.use('/', HOUSE_ROUTES);
+app.use('/', TEST_ROUTES);
+app.use('/', UNIVERSITY_ROUTES);
 
 app.get('/food',(req,res)=>{
   let id = req.session.Id_Student;
   req.session.loggedin = true;
   
-  connectionDB.query("SELECT * FROM buy_food WHERE Id_Student='" + id + "';", (err,result) => {
+  CONNECTION_DATABASE.query("SELECT * FROM buy_food WHERE Id_Student='" + id + "';", (err,result) => {
       if(err) throw err;
       res.send(result);
   });
@@ -157,6 +157,6 @@ app.use((req, res, next)=>{
   next();
 });
 
-app.listen(port, () => {
-  console.log("Server started on port " + port);
+app.listen(PORT, () => {
+  console.log("Server started on url: "+ "http://localhost:" + PORT);
 });
