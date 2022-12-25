@@ -1,8 +1,12 @@
-const ControllerBuyHouse = require('../controller/ControllerToBuyHouse');
-
+const ControllerHouse = require('../controller/ControllerHouse');
 const route = require('express').Router();
 
 /* Routes */
-route.post('/buyhouse', ControllerBuyHouse.ControllerBuyHouse);
+route.get('/get', ControllerHouse.ControllerGetHouse);
+route.get('/getall', ControllerHouse.ControllerGetAllHouse);
+route.put('/update', ControllerHouse.ControllerUpdateHouse);
+route.post('/create', ControllerHouse.ControllerCreateHouse);
+route.delete('/delete', ControllerHouse.ControllerDeleteHouse);
+route.post('/buyhouse', ControllerHouse.ControllerBuyHouse);
 
 module.exports = route;

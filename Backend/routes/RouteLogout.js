@@ -1,2 +1,4 @@
 const { logOut } = require("../controller/ControllerLogOut");
-app.get('/logout', logOut);
+const route = require('express').Router();
+
+route.get('/logout', logOut);

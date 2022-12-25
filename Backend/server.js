@@ -24,10 +24,9 @@ server.use((request, response, next)=>{
 
 /* Import routes from folder routes */
 server.use('/', require('./routes/RouteAuth'));
-server.use('/', require('./routes/RouteFood'));
-server.use('house/', require('./routes/RouteHouse'));
-//server.use('job/', require('./routes/RouteJob'));
-server.use('university/', require('./routes/RouteUniversity'));
+server.use('/house', require('./routes/RouteHouse'));
+server.use('/job', require('./routes/RouteJob'));
+server.use('/university', require('./routes/RouteUniversity'));
 
 server.listen(PORT_SERVER, () => {
     console.log(`Server running on port ${HOSTNAME_SERVER}:${PORT_SERVER}`);
