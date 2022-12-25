@@ -6,14 +6,14 @@ const cors = require('cors');
 dotenv.config();
 
 //Enviroment variables
-const { HOSTNAME_SERVER, PORT_SERVER} = process.env;
+const { HOSTNAME_SERVER, PORT_SERVER, secret} = process.env;
 const server = express();
 
 /* Midllewars */
 server.use(cors());
-server.use(express.json());
+server.use(express.json()); //Parse the incomming request with json
 server.use(express.urlencoded({ extended:false })); //url encode for get data form
-server.use(session({ secret: 'secret', resave: true, saveUninitialized: true })); 
+server.use(session({ secret, resave: true, saveUninitialized: true })); 
 
 //function for clear cache after logout
 server.use((request, response, next)=>{

@@ -1,8 +1,8 @@
 const sha = require('sha.js');
-const rand = require('csprng');
+//const rand = require('csprng');
  
 const hashPassword = (plainTextPassword) => {
-    let passwordHash = sha('sha256').update(plainTextPassword + rand(160, 36)).digest('hex');
+    let passwordHash = sha('sha256').update(plainTextPassword + 10).digest('hex');
     return passwordHash;
 };
 

@@ -9,6 +9,6 @@ route.post('/signin', ControllerPlayer.ControllerSignIn);
 route.put('/updateplayer', ControllerPlayer.ControllerUpdatePlayer);
 route.get('/getallplayer', ControllerPlayer.ControllerGetAllPlayers);
 route.get('/getplayer/:IdStudent', ControllerPlayer.ControllerGetPlayer);
-route.delete('/deleteplayer', ControllerPlayer.ControllerDeletePlayer);
+route.delete('/deleteplayer/:IdStudent', ControllerPlayer.ControllerDeletePlayer);
 
 module.exports = route;
