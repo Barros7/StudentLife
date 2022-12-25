@@ -2,9 +2,11 @@ const MyConnectionDB = require("../config/ConfigDatabase");
 const functionHansh = require('../service/passwordHash');
 
 const ControllerHome = (request, response) => {
-    response.json({
-        test:"Hello World!!!"
-    })
+    if(req.session.loggedin){
+        response.json({ message: request.session });
+    } else {
+        response.json({ login: false, name: 'Deve iniciar sessão!' });
+    }
 };
 
 /* Authentication login */
@@ -12,13 +14,16 @@ const ControllerSignIn = (request, response) => {
     const { email, password } = request.body;
     if(email && password){
         let verifyUser = "SELECT * FROM Students WHERE Email = ? AND Password = ?";
-        MyConnectionDB.query(verifyUser, [email, functionHansh(password)], (error, result) => {
-            if(error) throw error;
-            console.log(result);
-        })
-    } else {
-        response.status(400).json({ message: 'Email or Password wrong!' });
-    }
+        MyConnectionDB.query(verifyUser, [email, functionHansh(password)], (error, results) => {
+            if(results.length === 0 || !(functionHansh(password) === results[0].Password)){
+              response.json({ message: "Username or Password incorrect", statusCode: 403 });
+            } else {
+                request.session.loggedin = true;
+                request.session = results[0];
+                res.json({ "session": request.session });
+            };
+        });
+    };
 };
 
 /* Insert new player on the database */
@@ -77,4 +82,4 @@ module.exports = {
     ControllerGetAllPlayers,
     ControllerGetPlayer,
     ControllerDeletePlayer
-};
+}
