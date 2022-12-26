@@ -1,24 +1,28 @@
 const myConnectionDB = require('../config/ConfigDatabase');
+const { StatusCodes } = require('http-status-codes');
 
 /* Payment university */
 const ControllerSignContract = ((request, response) => {
     const { price } = request.body;
     myConnectionDB.query(`UPDATE Faculties SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${StudentID}`, 
     (error, results) => {
-        if(error) throw console.log(error);
-        console.log(results);
+        if(error) {
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying pay the faculty'});
+        } else {
+            response.status(StatusCodes.CREATED).json(results);
+        };
     });
 });
 
 /* Insert new university */
 const ControllerCreateUniversity = ((request, response) => {
-    const { username, email, password, age = 18, life = 100, emotion = 100, money = 500, level = 0 } = request.body;
+    const { faculty, fee, level } = request.body;
     const createPlayer = `INSERT INTO Faculties SET ?`;
-    myConnectionDB.query(createPlayer, {username, email, password: functionHansh(password), age, life, emotion, money, level}, (error, results) => {
+    myConnectionDB.query(createPlayer, {faculty, fee, level}, (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying create a new player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying create a new faculty'});
         } else {
-            response.status(200).json(results);
+            response.status(StatusCodes.CREATED).json(results);
         };
     });
 });
@@ -27,9 +31,9 @@ const ControllerCreateUniversity = ((request, response) => {
 const ControllerGetAllUniversity = ((request, response) => {
     myConnectionDB.query(`SELECT * FROM Faculties;`, (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to get all player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get all player'});
         } else {
-            response.status(200).json(results)
+            response.status(StatusCodes.OK).json(results)
         };
     });
 });
@@ -39,9 +43,9 @@ const ControllerGetUniversity = ((request, response) => {
     const {FacultyID} = request.params;
     myConnectionDB.query('SELECT * FROM Faculties WHERE FacultyID = ?' , [parseInt(FacultyID)], (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to get player by ID'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get player by ID'});
         } else {
-            response.status(200).json(results)
+            response.status(StatusCodes.OK).json(results)
         };
     });
 });
@@ -56,9 +60,9 @@ const ControllerDeleteUniversity = ((request, response) => {
     const {FacultyID} = request.params;
     myConnectionDB.query('DELETE FROM Faculties WHERE FacultyID = ?', [parseInt(FacultyID)], (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to delete player!'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to delete player!'});
         } else {
-            response.json({ results, message: 'Player deleted successfully!' });
+            response.status(StatusCodes.OK).json({ results, message: 'Player deleted successfully!' });
         };
     });
 });

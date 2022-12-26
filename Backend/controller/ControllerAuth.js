@@ -1,5 +1,6 @@
 const myConnectionDB = require("../config/ConfigDatabase");
 const functionHansh = require('../service/passwordHash');
+const { StatusCodes } = require('http-status-codes');
 
 const ControllerHome = (request, response) => {
     response.status(200).json({ message: "Student Life Game for Web!"});
@@ -12,12 +13,12 @@ const ControllerSignIn = (request, response) => {
         let verifyUser = "SELECT * FROM Students WHERE Email = ? AND Password = ?";
         myConnectionDB.query(verifyUser, [email, functionHansh(password)], (error, results) => {
             if(error){
-                response.status(401).json({ message: 'Error when trying to login. Please, try again later!'});
+                response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error when trying to login. Please, try again later!'});
             } else {
                 if(results.length === 0 || !(functionHansh(password) === results[0].Password)){
-                  response.status(403).json({ message: "Username or Password incorrect"});
+                  response.status(StatusCodes.UNAUTHORIZED).json({ message: "Username or Password incorrect"});
                 } else {
-                    response.status(200).json({ message: "Welcome!"});
+                    response.status(StatusCodes.OK).json({ message: "Welcome!"});
                 };
             };
         });
@@ -30,9 +31,9 @@ const ControllerCreatePlayer = (request, response) => {
     const createPlayer = `INSERT INTO Students SET ?`;
     myConnectionDB.query(createPlayer, {username, email, password: functionHansh(password), age, life, emotion, money, level}, (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying create a new player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying create a new player'});
         } else {
-            response.status(200).json(results);
+            response.status(StatusCodes.CREATED).json(results);
         };
     });
 };
@@ -44,9 +45,9 @@ const ControllerUpdatePlayer = (request, response) => {
     const updatePlayer = `UPDATE Students SET Username = ?, Email = ?, Password = ?, Age = ?, Life = ?, Emotion = ?, Money = ? WHERE StudentID = ${StudentId}`;
     myConnectionDB.query(updatePlayer, [username, email, password, age, life, emotion, money], (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to update data player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to update data player'});
         } else {
-            response.status(200).json(results);
+            response.status(StatusCodes.OK).json(results);
         };
     });
 };
@@ -55,9 +56,9 @@ const ControllerUpdatePlayer = (request, response) => {
 const ControllerGetAllPlayers = (_, response) => {
     myConnectionDB.query(`SELECT * FROM Students;`, (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to get all player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get all player'});
         } else {
-            response.status(200).json(results)
+            response.status(StatusCodes.OK).json(results)
         };
     });
 };
@@ -67,9 +68,9 @@ const ControllerGetPlayer = (request, response) => {
     const {IdStudent} = request.params;
     myConnectionDB.query('SELECT * FROM Students WHERE StudentID = ?' , [parseInt(IdStudent)], (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to get player by ID'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get player by ID'});
         } else {
-            response.status(200).json(results)
+            response.status(StatusCodes.OK).json(results)
         };
     });
 };
@@ -79,9 +80,9 @@ const ControllerDeletePlayer = (request, response) => {
     const {IdStudent} = request.params;
     myConnectionDB.query('DELETE FROM Students WHERE StudentID = ?', [parseInt(IdStudent)], (error, results) => {
         if(error) {
-            response.status(401).json({message: 'Error when trying to delete player!'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to delete player!'});
         } else {
-            response.json({ results, message: 'Player deleted successfully!' });
+            response.status(StatusCodes.OK).json({ results, message: 'Player deleted successfully!' });
         };
     });
 };
