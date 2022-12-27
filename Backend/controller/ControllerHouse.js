@@ -6,9 +6,12 @@ const ControllerBuyHouse = ((request, response) => {
     const { price } = request.body;
     myConnectionDB.query(`UPDATE Houses SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${StudentID}`, 
     (error, results) => {
-        if(error) throw console.log(error);
-        console.log(results);
-    })    
+        if(error) {
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({results});
+        } else {
+            response.status(StatusCodes.OK).json({results});
+        };
+    });
 });
 
 /* Insert new house */

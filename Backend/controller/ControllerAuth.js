@@ -96,4 +96,4 @@ module.exports = {
     ControllerGetAllPlayers,
     ControllerGetPlayer,
     ControllerDeletePlayer
-}
+};

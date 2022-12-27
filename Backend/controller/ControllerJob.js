@@ -1,24 +1,11 @@
 const myConnectionDB = require('../config/ConfigDatabase');
 const { StatusCodes } = require('http-status-codes');
 
-/* Buy job */
-const ControllerSignContract = ((request, response) => {
-    const { price } = request.body;
-    myConnectionDB.query(`UPDATE Students SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${StudentID}`, 
-    (error, results) => {
-        if(error) {
-            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to sign contrat'});
-        } else {
-            response.status(StatusCodes.OK).json(results);
-        };
-    });
-});
-
 /* Insert new job */
 const ControllerCreateJob = ((request, response) => {
-    const { username, email, password, age = 18, life = 100, emotion = 100, money = 500, level = 0 } = request.body;
-    const createPlayer = `INSERT INTO Students SET ?`;
-    myConnectionDB.query(createPlayer, {username, email, password: functionHansh(password), age, life, emotion, money, level}, (error, results) => {
+    const { Company, Image, Value, WorkTime } = request.body;
+    const createPlayer = `INSERT INTO Companies SET ?`;
+    myConnectionDB.query(createPlayer, { Company, Image, Value, WorkTime }, (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying create a new player'});
         } else {
@@ -68,7 +55,6 @@ const ControllerDeleteJob = ((request, response) => {
 });
 
 module.exports = { 
-    ControllerSignContract,
     ControllerCreateJob,
     ControllerGetJob,
     ControllerGetAllJob,
