@@ -1,8 +1,9 @@
 const session = require('express-session');
 const express = require('express');
 const api = express();
-const server = require('http').Server(api);
-const io = require('socket.io')(server);
+const server = require('http').createServer(api);
+const {Server} = require('socket.io');
+const io = new Server(server);
 const dotenv = require('dotenv');
 const cors = require('cors');
 
@@ -27,6 +28,11 @@ api.use('/house', require('./routes/RouteHouse'));
 //api.use('/job', require('./routes/RouteJob'));
 api.use('/university', require('./routes/RouteUniversity'));
 
-api.listen(PORT_SERVER, () => {
+api.use(express.static('public'));
+
+io.on("connection", (socket) => {
+    console.log(socket);
+})
+server.listen(PORT_SERVER, () => {
     console.log(`Server running on port ${HOSTNAME_SERVER}:${PORT_SERVER}`);
 });
