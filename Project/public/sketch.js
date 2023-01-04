@@ -1,5 +1,4 @@
 let scene;
-let socket;
 let dataUser;
 let backgroundImage;
 let backgroundGameMusic;
@@ -7,7 +6,6 @@ let background_image_start;
 let backgroundImageRegisterAndLogin;
 let button_registerLogin_position_x = 720;
 let button_registerLogin_position_y = 450;
-
 
 function preload(){
   backgroundGameMusic = loadSound('assets/background-game-music.mp3');
@@ -24,18 +22,9 @@ function mousePressed(){
 }
 
 function setup(){
-  socket = io.connect("http://localhost:8000/getallplayer");
-  socket.on('connect', function() {
-    console.log("Connected");
-  });
-// Receive from socket server
-socket.on('generic_message', function (data) {
-    console.log(data);
-    ellipse(data.x, data.y, 50, 50);
-  });
 
   backgroundGameMusic.loop();
-  scene = 3
+  scene = 4
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
 }
@@ -51,7 +40,9 @@ function draw(){
     formRegister();
   } else if (scene === 3) {
     homePage();
-  } 
+  } else if(scene === 4){
+    displayMakeSignUp()
+  }
 }
 
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
@@ -60,13 +51,7 @@ Main page after login
 function homeScene(){
   const COLORTEXT = color('#ffffff');
   const COLORBUTTONLOGIN = color('#000D4F');
-  
-  function mousePressed(){
-    if(mouseX){
-      alert(mouseX)
     
-    }
-  }
   //let buttonNewGame = createButton('New Game');
   //let buttonContinueGame = createButton('Continue Game');
   background(background_image_start);
@@ -98,32 +83,55 @@ function homeScene(){
       Display 
 ««««««««««««««««««««««««««««««««««««««««««««*/
 function displayMakeSignUp(){
-  const COLORTEXT = color('#ffffff');
-  const COLORBUTTONLOGIN = color('#000D4F');
-  let buttonNewGame = createButton('New Game');
-  let buttonContinueGame = createButton('Continue Game');
   background(background_image_start);
+  fill(50);
+  text(mouseX + "," + mouseY, 540, 368, 70, 80);
+  textSize(30)
 
-  // button New game
-  buttonNewGame.style('background-color', COLORBUTTONLOGIN);
-  buttonNewGame.style('color', COLORTEXT);
-  buttonNewGame.style('font-size', 130 + '%');
-  buttonNewGame.position(1024, 250);
-  buttonNewGame.size(230, 40);
-  buttonNewGame.mousePressed();
+  // Cursor circle.
+  push();
+    fill("#CC00FF");
+    circle(mouseX, mouseY, 10);
+  pop();
+  
+  // Button start game.
+  if(mouseX >= 840 && mouseY >= 225 && mouseX <= 1253 && mouseY <= 270){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(840,225,413,45,10);
+    pop();
 
-  // button Continue game
-  buttonContinueGame.style('background-color', COLORBUTTONLOGIN);
-  buttonContinueGame.style('color', COLORTEXT);
-  buttonContinueGame.style('font-size', 130 + '%');
-  buttonContinueGame.position(1024, 300);
-  buttonContinueGame.size(230, 40);
-}
-/*
-  function preload(){
-    backgroundImage = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1651455915/background_oackyg.jpg");
+    if(mouseIsPressed){
+      scene = 2;
+    };
+  };
+
+  // Button continue game.
+  if(mouseX >= 840 && mouseY >= 288 && mouseX <= 1253 && mouseY <= 335){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(840,288,413,45,10);
+    pop();
+
+    if(mouseIsPressed){
+      scene = 1;
+    };
+  };
+
+  // Button menu.
+  if(mouseX >= 1172 && mouseY >= 601 && mouseX <= 1252 && mouseY <= 656){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      circle(1172, 601, 80, 55);
+    pop();
   }
-*/
+};
 
 // let counter;
 // function setup() {

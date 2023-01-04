@@ -8,6 +8,7 @@ const ControllerHome = (request, response) => {
 
 /* Authentication login */
 const ControllerSignIn = (request, response) => {
+    
     const { email, password } = request.body;
     if(email && password){
         let verifyUser = "SELECT * FROM Students WHERE Email = ? AND Password = ?";
@@ -51,6 +52,21 @@ const ControllerUpdatePlayer = (request, response) => {
         };
     });
 };
+
+/*  
+    const ControllerGetPlayer = (request, response) => {
+        const {IdStudent} = request.params;
+        let decrement = `CREATE TRIGGER decrement_life AFTER INSERT ON Students FOR EACH ROW BEGIN UPDATE Students SET Life = Life - 1 WHERE StudentID = 1; END`
+        
+        myConnectionDB.query(decrement, (error, message) => {
+            if(error){
+                console.log(error);
+            }
+            console.log(message)
+            response.json({message})
+        });
+    }
+*/
 
 /* Get all player */
 const ControllerGetAllPlayers = (_, response) => {

@@ -9,20 +9,20 @@ describe('Test game over function', () => {
 
 /*
     io.on('connection', function(socket) {
-    socket.on('create', function(data) {
-        // código para criar um novo registro usando os dados enviados pelo cliente
-    });
+        socket.on('create', function(data) {
+            // código para criar um novo registro usando os dados enviados pelo cliente
+        });
 
-    socket.on('read', function(id) {
-        // código para ler um registro específico e enviar os dados de volta para o cliente
-    });
+        socket.on('read', function(id) {
+            // código para ler um registro específico e enviar os dados de volta para o cliente
+        });
 
-    socket.on('update', function(data) {
-        // código para atualizar um registro usando os dados enviados pelo cliente
-    });
+        socket.on('update', function(data) {
+            // código para atualizar um registro usando os dados enviados pelo cliente
+        });
 
-    socket.on('delete', function(id) {
-        // código para deletar um registro
-    });
+        socket.on('delete', function(id) {
+            // código para deletar um registro
+        });
     });
 */

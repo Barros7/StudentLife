@@ -29,9 +29,6 @@ api.use('/university', require('./routes/RouteUniversity'));
 
 api.use(express.static('public'));
 
-io.on("connection", (socket) => {
-    console.log(socket.id);
-})
-server.listen(PORT_SERVER, () => {
+api.listen(PORT_SERVER, () => {
     console.log(`Server running on port ${HOSTNAME_SERVER}:${PORT_SERVER}`);
 });

@@ -1,6 +1,7 @@
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
       Form login
 ««««««««««««««««««««««««««««««««««««««««««««*/
+
 function formLogin(){
   
   background(backgroundImageRegisterAndLogin);
@@ -10,13 +11,13 @@ function formLogin(){
   const COLORBUTTONLOGIN = color('#000D4F');
 
   //Style input last name
-  usernameInput = createInput('', 'text');
+  let usernameInput = createInput('', 'email');
   usernameInput.style('background-color', COLORINPUT);
   usernameInput.size(380,30);
   usernameInput.position(width/2,height/2.1);
 
   //Style input password
-  passwordInput = createInput('', 'password');
+  let passwordInput = createInput('', 'password');
   passwordInput.style('background-color', COLORINPUT);
   passwordInput.size(380,30);
   passwordInput.position(width/2,height/1.8);
@@ -28,7 +29,6 @@ function formLogin(){
   loginBTN.style('font-size', 130 + '%');
   loginBTN.position(button_registerLogin_position_x, button_registerLogin_position_y);
   loginBTN.size(250, 40);
-  if(mouseX > button_registerLogin_position_x && mouseX <= button_registerLogin_position_x)
   loginBTN.mousePressed(doLogin);
 
   // Button go to login screen
@@ -41,29 +41,20 @@ function formLogin(){
   goToLoginScreenBTN.mousePressed(function(){
     scene = 2;
   });
+};
+  
+/*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+      Login user function
+««««««««««««««««««««««««««««««««««««««««««««*/
+function doLogin(){
+  let username = usernameInput.value();
+  let password = passwordInput.value();
+
+  httpPost('http://localhost:8000/signin','json', {username, password}, (respostaServidor) => {
+      if (respostaServidor.statusCode === 403){
+        changeScreen = 3;
+      } else {
+        homeScene();
+      };
+  });
 }
-  
-  /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-        Login user function
-  ««««««««««««««««««««««««««««««««««««««««««««*/
-  function doLogin(){
-    let username = usernameInput.value();
-    let password = passwordInput.value();
-    let userData = {
-      "username": username,
-      "password": password
-    }
-    if (userData.username == "" || typeof(userData.username) != 'string' || userData.password == ""){
-      alert("Username or Password wrong!");
-    } 
-    else {
-        httpPost('/signin','json', userData, (respostaServidor) => {
-          if (respostaServidor.statusCode === 403){
-            changeScreen = 0;
-          } else {
-            homeScene();
-          }
-      });
-    }
-  }
-  
