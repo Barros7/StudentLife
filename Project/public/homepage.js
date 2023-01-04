@@ -12,8 +12,6 @@ function homePage(){
     let textEmotion;
     let textMoney;
     let textName;
-
-    background(backgroundImage);
     
     //Level life
     textLife = createP(life);
@@ -26,25 +24,27 @@ function homePage(){
     textEmotion.style('font-size', '30px');
     textEmotion.style('color', '#ffffff');
     textEmotion.position(490, -13);
-
+    
     //Money
     textMoney = createP(money);
     textMoney.style('font-size', '30px');
     textMoney.style('color', '#ffffff');
     textMoney.position(810, -13);
-
+    
     //Name
     textName = createP(username);
     textName.style('font-size', '25px');
     textName.style('color', '#ffffff');
     textName.position(1060, 0);
-
+    
     //Age
     textAge = createP(age);
     textAge.style('font-size', '25px');
     textAge.style('color', '#ffffff');
     textAge.position(1060, 30);
 
+    background(backgroundImage);
+    
     httpGet(url, 'json', false, (data) => {
         life = data[0].Life;
         emotion = data[0].Emotion;

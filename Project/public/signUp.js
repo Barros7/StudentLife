@@ -1,95 +1,74 @@
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 Form register
 ««««««««««««««««««««««««««««««««««««««««««««*/
+
 function formRegister(){
-    background(backgroundImageRegisterAndLogin);
-    const COLORTEXT = color('#ffffff');
-    const BACKGROUNDCOLORINPUT = color('#374592');
-    const COLORBUTTONLOGIN = color('#000D4F');
+  background(backgroundRegister);
+
+  //Style input username
+  emailInput = createInput('', 'text');
+  emailInput.style('background-color', '#374592');
+  emailInput.style('color', '#ffffff');
+  emailInput.size(380,30);
+  emailInput.position(705,height/2.5);
   
-    //Style input username
-    emailInput = createInput('', 'text');
-    emailInput.style('background-color', BACKGROUNDCOLORINPUT);
-    emailInput.style('color', COLORTEXT);
-    emailInput.size(380,30);
-    emailInput.position(width/2,height/2.5);
+  //Style input e-mail
+  usernameInput = createInput('', 'text');
+  usernameInput.style('background-color', '#374592');
+  usernameInput.style('color', '#ffffff');
+  usernameInput.size(380,30);
+  usernameInput.position(705,320);
   
-    //Style input e-mail
-    usernameInput = createInput('', 'text');
-    usernameInput.style('background-color', BACKGROUNDCOLORINPUT);
-    usernameInput.style('color', COLORTEXT);
-    usernameInput.size(380,30);
-    usernameInput.position(width/2,height/2.1);
+  //Style input password
+  passwordInput = createInput('', 'password');
+  passwordInput.style('background-color', '#374592');
+  passwordInput.style('color', '#ffffff');
+  passwordInput.size(380,30);
+  passwordInput.position(705,height/1.8);
   
-    //Style input password
-    passwordInput = createInput('', 'password');
-    passwordInput.style('background-color', BACKGROUNDCOLORINPUT);
-    passwordInput.style('color', COLORTEXT);
-    passwordInput.size(380,30);
-    passwordInput.position(width/2,height/1.8);
-  
-    registerBTN = createButton('Registar');
-    registerBTN.style('background-color', COLORBUTTONLOGIN);
-    registerBTN.style('color', COLORTEXT);
-    registerBTN.style('font-size', 125 + '%');
-    registerBTN.position(button_registerLogin_position_x,button_registerLogin_position_y);
-    registerBTN.size(250, 40);
-    registerBTN.mousePressed(doRegister);
-  
-    // Button go to login screen
-    goToLoginScreenBTN = createButton('Login here!');
-    goToLoginScreenBTN.style('background-color', COLORBUTTONLOGIN);
-    goToLoginScreenBTN.style('color', COLORTEXT);
-    goToLoginScreenBTN.style('font-size', 125 + '%');
-    goToLoginScreenBTN.position(10,10);
-    goToLoginScreenBTN.size(150, 50);
-    goToLoginScreenBTN.mousePressed(function(){
+  push();
+    fill(50);
+    text(mouseX + "," + mouseY, 540, 368, 70, 80);
+    textSize(30);
+  pop();
+
+  if(mouseX >= 17 && mouseY >= 12 && mouseX <= 255 && mouseY <= 87){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(17, 13, 237, 75, 10);
+    pop();
+
+    if(mouseIsPressed){
+      removeElements();
       scene = 1;
-    });
-  }
+    };
+  };
+
+  if(mouseX >= 725 && mouseY >= 430 && mouseX <= 1080 && mouseY <= 475){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(725, 429, 355, 44, 10);
+    pop();
+  };
+};
   
-  /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-        Register user function
-  ««««««««««««««««««««««««««««««««««««««««««««*/
   
-  function doRegister(){
-    let email = emailInput.value();
-    let username = usernameInput.value();
-    let password = passwordInput.value();
-  
-    emailInput.remove();
-    usernameInput.remove();
-    passwordInput.remove();
-    registerBTN.remove();
-    
-    let userData = {
-      "age": age,
-      "emotion":emotionUser,
-      "email":email,
-      "level":academicLevel,
-      "life":lifeUser,
-      "money":moneyUser,
-      "name":"name",
-      "password":password,
-      "salary":salary,
-      "image":"image",
-      "username":username,
-    }
-  
-    if (userData.username == "" || userData.username.length < 5 || typeof(userData.username) != 'string'){
-      alert("Username must be longer than 5 characters");
-    }
-    else if (userData.email == "" || userData.email.length < 5 ){
-      alert("Email must be longer than 5 characters!");
-    }
-    else if (userData.password == "" || userData.password.length < 6){
-      alert("Password must be longer than 6 characters!");
-    }
-    else {
-      httpPost('/register','json', userData ,(responseServer)=>{
-        Id_Student  = responseServer[0].Id_Student;
-        alert(responseServer[0].Id_Student)
-        homeScene(); //If register user, call function homeScene;
-      });
-    }
-  }
+/*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+      Register user function
+««««««««««««««««««««««««««««««««««««««««««««*/
+
+function doRegister(){
+  let email = emailInput.value();
+  let username = usernameInput.value();
+  let password = passwordInput.value();
+
+  httpPost('/register','json', {email, username, password} ,(responseServer)=>{
+    Id_Student  = responseServer[0].Id_Student;
+    alert(responseServer[0].Id_Student)
+    homeScene();
+  });
+};

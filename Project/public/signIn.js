@@ -3,58 +3,73 @@
 ««««««««««««««««««««««««««««««««««««««««««««*/
 
 function formLogin(){
+  background(backgroundLogin);
   
-  background(backgroundImageRegisterAndLogin);
-
-  const COLORTEXT = color('#ffffff');
-  const COLORINPUT = color('#374592');
-  const COLORBUTTONLOGIN = color('#000D4F');
-
   //Style input last name
-  let usernameInput = createInput('', 'email');
-  usernameInput.style('background-color', COLORINPUT);
+  usernameInput = createInput('', 'email');
+  usernameInput.attribute('placeholder', 'Enter your email');
+  usernameInput.style('color', 'white');
+  usernameInput.style('background-color', '#374592');
   usernameInput.size(380,30);
-  usernameInput.position(width/2,height/2.1);
-
+  usernameInput.position(705,320);
+  
   //Style input password
-  let passwordInput = createInput('', 'password');
-  passwordInput.style('background-color', COLORINPUT);
+  passwordInput = createInput('', 'password');
+  passwordInput.attribute('placeholder', 'Enter your password');
+  passwordInput.style('color', 'white');
+  passwordInput.style('background-color', '#374592');
   passwordInput.size(380,30);
-  passwordInput.position(width/2,height/1.8);
+  passwordInput.position(705,370);
 
-  //Style button login
-  loginBTN = createButton('Login');
-  loginBTN.style('background-color', COLORBUTTONLOGIN);
-  loginBTN.style('color', COLORTEXT);
-  loginBTN.style('font-size', 130 + '%');
-  loginBTN.position(button_registerLogin_position_x, button_registerLogin_position_y);
-  loginBTN.size(250, 40);
-  loginBTN.mousePressed(doLogin);
+  fill(20);
+  text(mouseX + "," + mouseY, 540, 368, 70, 80);
+  textSize(30);
 
-  // Button go to login screen
-  goToLoginScreenBTN = createButton('Sign Up here!');
-  goToLoginScreenBTN.style('background-color', COLORBUTTONLOGIN);
-  goToLoginScreenBTN.style('color', COLORTEXT);
-  goToLoginScreenBTN.style('font-size', 125 + '%');
-  goToLoginScreenBTN.position(10,10);
-  goToLoginScreenBTN.size(150, 50);
-  goToLoginScreenBTN.mousePressed(function(){
-    scene = 2;
-  });
+  if(mouseX >= 725 && mouseY >= 430 && mouseX <= 1080 && mouseY <= 475){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(725, 429, 355, 44, 10);
+    pop();
+    
+    if(mouseIsPressed){
+      sonOpenClick.play();
+      removeElements();
+      scene = 3;
+    };
+  };
+  
+  if(mouseX >= 17 && mouseY >= 12 && mouseX <= 255 && mouseY <= 87){
+    push();
+      noFill();
+      strokeWeight(3);
+      stroke("#CC00FF");
+      rect(17, 13, 237, 75, 10);
+    pop();
+    
+    if(mouseIsPressed){
+      sonOpenClick.play();
+      removeElements();
+      scene = 2;
+    };
+  };
 };
   
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
       Login user function
-««««««««««««««««««««««««««««««««««««««««««««*/
+««««««««««««««««««««««««««««««««««««««««««««
 function doLogin(){
   let username = usernameInput.value();
   let password = passwordInput.value();
-
+  
   httpPost('http://localhost:8000/signin','json', {username, password}, (respostaServidor) => {
       if (respostaServidor.statusCode === 403){
         changeScreen = 3;
       } else {
         homeScene();
       };
-  });
-}
+    });
+  }
+
+  */
