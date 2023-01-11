@@ -2,10 +2,6 @@ const myConnectionDB = require("../config/ConfigDatabase");
 const functionHansh = require('../service/passwordHash');
 const { StatusCodes } = require('http-status-codes');
 
-const ControllerHome = (request, response) => {
-    response.status(200).json({ message: "Student Life Game for Web!"});
-};
-
 /* Authentication login */
 const ControllerSignIn = (request, response) => {
     
@@ -105,7 +101,6 @@ const ControllerDeletePlayer = (request, response) => {
 
 /* Export functions */
 module.exports = {
-    ControllerHome,
     ControllerSignIn,
     ControllerCreatePlayer,
     ControllerUpdatePlayer,

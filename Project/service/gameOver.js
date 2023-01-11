@@ -6,7 +6,6 @@ const gameOver = (StudentID) => {
         if(error){
             return 'Server problem!';
         } else {
-
             //Decrement five to five second
             setTimeout(() => {
                 myConnectionDB.query(`UPDATE Students SET Life = Life - 5`,(error, results) => {
@@ -27,7 +26,6 @@ const gameOver = (StudentID) => {
                     };
                 });
             }, 5000);
-
         };
     });
 };

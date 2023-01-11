@@ -7,8 +7,8 @@ const subtractHealthAndEmotion = (percentLife, percentEmotion) => {
         if(error) {
             response.status(401).json({ messageUniversity: 'Oh, no! Unable to register!' });
         } else {
-            myConnectionDB.query(`INSERT INTO Universoties`);
-        }
+            myConnectionDB.query(`INSERT INTO Universities`);
+        };
     });    
 };
 

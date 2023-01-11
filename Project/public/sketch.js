@@ -1,34 +1,83 @@
 // Variable to state control
 let scene = 0;
+let forms = 0;
+let mailBox = 0;
+
+let username, agePlayer, age, lifeLevel, life, emotion, money;
 
 // Variables image
+let imageFormJob;
+let imageFormFood;
 let backgroundImage;
 let backgroundLogin;
+let imageFormCollege;
+let imageFormDomicile;
+let imageFormTransport;
 let backgroundRegister;
 let backgroundMainPage;
 
-// Variables son
-let backgroundGameMusic;
+// Variables sound
 let sonOpenClick;
 let sonErrorClick;
 let sonSuccessClick;
+let backgroundGameMusic;
+
+// Message box for success alert
+let mailBoxImage;
+let mailBoxNosuccessImage;
 
 function preload(){
   backgroundGameMusic = loadSound('assets/background-game-music.mp3');
   sonOpenClick = loadSound('assets/mixkit-select-click-1109.wav');
-
-  backgroundImage = loadImage('https://res.cloudinary.com/dcglas1nk/image/upload/v1672847587/scene1_aohv4h.png');
+  
+  // Background images
+  backgroundImage = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1673315552/Scene_2_1_s90jyz.png");
   backgroundRegister = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672847587/Register_o1jxgf.png");
   backgroundLogin = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672847587/Login_fyjx6i.png");
   backgroundMainPage = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672236451/Tela_Inicial_dmyjeo.png");
+  
+  // Forms images
+  imageFormJob = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672965559/assets/Job_saar9v.png");
+  imageFormFood = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672964865/assets/Food_g1rtpp.png");
+  imageFormTransport = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672964865/assets/Transport_vg4l6k.png");
+  imageFormCollege = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672941857/assets/formCollege_jbdnv6.png")
+  imageFormDomicile = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1672964865/assets/Domicile_soq0xu.png");
+  
+  // MailBox for success alerts
+  mailBoxImage = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1673313236/Congrats_gbgdrw.png");
+  mailBoxNosuccessImage = loadImage("https://res.cloudinary.com/dcglas1nk/image/upload/v1673413753/No_success_pmgo1d.png");
 };
 
 function setup(){
-  //backgroundGameMusic.pause();
-  //backgroundGameMusic.loop();
+  var socket = io.connect('http://localhost:8000');
+  
+  backgroundGameMusic.play();
+  backgroundGameMusic.loop();
+
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0,0);
+
+  // Rent a house
+  socket.emit('rent', { id: 'sdsd', price: 'wdwdwd' });
+  
+  setInterval(() => {
+    socket.emit('decrement');
+  }, 5000);
+  
+  // Decrement life value
+  socket.on('life', (data) => {
+    life = data.life;
+    console.log(life);
+  });
+
+  // Check if the player lost
+  socket.on('gameOver', (data) => {
+    if(data.response === "Game over"){
+        scene = 0;
+    };
+  });
 };
+
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -85,7 +134,7 @@ function displayMakeSignUp(){
     };
   };
 
-  // Button menu.
+  // Button settings
   if(mouseX >= 1172 && mouseY >= 601 && mouseX <= 1252 && mouseY <= 656){
     push();
       noFill();
@@ -95,54 +144,3 @@ function displayMakeSignUp(){
     pop();
   };
 };
-
-// let counter;
-// function setup() {
-//   createCanvas(400, 400);
-//   counter = new Count(0,100)
-//   counter.start();
-// }
-
-// function draw() {
-//   background(0);
-//   let middle = height/2;
-//   let sVal = counter.s;
-//   let Progress = map(sVal,0,100,0,100);
-  
-//   fill(255,0,0);
-//   textSize(20);
-//   textFont('monospace')
-//   let txt = text(sVal + '%', 55, middle * 0.9 + 36);
-  
-//   rect(0,middle,Progress,20,15)
-//   stroke(0,255,0)
-//   noFill();
-//   rect(0,middle,150,20,15)
-  
-//   if (floor(random(500)) == 100) {
-//     counter.reset();
-//   }
-  
-// }
-
-// class Count{
-//   constructor(s,w){
-//     this.s = s
-//     this.w = w
-//     this.p = createP('')
-//   }
-//   start(){
-//     if (!this.done) {
-//       setInterval(() => this.counter(),this.w)
-//     }
-//   }
-//   counter(){
-//     if(this.s > 0){
-//       this.s --
-//       this.p.html(this.s)
-//     }
-//   }
-//   reset(){
-//     this.s = 100
-//   }
-// }

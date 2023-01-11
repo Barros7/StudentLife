@@ -2,9 +2,10 @@ const myConnectionDB = require('../config/ConfigDatabase');
 const { StatusCodes } = require('http-status-codes');
 
 /* Payment university */
-const ControllerSignContract = ((request, response) => {
-    const { price } = request.body;
-    myConnectionDB.query(`UPDATE Faculties SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${StudentID}`, 
+const ControllerPaymentUniversity = ((request, response) => {
+    const { price, idFaculty } = request.body;
+    const { idStudent } = request.params;
+    myConnectionDB.query(`UPDATE Students SET FacultyID = ${idFaculty}, Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${idStudent}`, 
     (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying pay the faculty'});
@@ -68,10 +69,10 @@ const ControllerDeleteUniversity = ((request, response) => {
 });
 
 module.exports = { 
-    ControllerSignContract,
-    ControllerCreateUniversity,
     ControllerGetUniversity,
+    ControllerCreateUniversity,
     ControllerGetAllUniversity,
     ControllerDeleteUniversity,
-    ControllerUpdateUniversity
+    ControllerUpdateUniversity,
+    ControllerPaymentUniversity
 };

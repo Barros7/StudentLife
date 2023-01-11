@@ -22,9 +22,8 @@ function formLogin(){
   passwordInput.position(705,370);
 
   fill(20);
-  text(mouseX + "," + mouseY, 540, 368, 70, 80);
-  textSize(30);
-
+  
+  // Button to do login
   if(mouseX >= 725 && mouseY >= 430 && mouseX <= 1080 && mouseY <= 475){
     push();
       noFill();
@@ -40,6 +39,7 @@ function formLogin(){
     };
   };
   
+  // Button to change scene to display register
   if(mouseX >= 17 && mouseY >= 12 && mouseX <= 255 && mouseY <= 87){
     push();
       noFill();
@@ -54,22 +54,23 @@ function formLogin(){
       scene = 2;
     };
   };
+  text(mouseX + "," + mouseY, 540, 368, 70, 80);
+  textSize(30);
 };
   
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
-      Login user function
-««««««««««««««««««««««««««««««««««««««««««««
+              Login user function
+««««««««««««««««««««««««««««««««««««««««««««*/
 function doLogin(){
   let username = usernameInput.value();
   let password = passwordInput.value();
-  
-  httpPost('http://localhost:8000/signin','json', {username, password}, (respostaServidor) => {
-      if (respostaServidor.statusCode === 403){
-        changeScreen = 3;
-      } else {
-        homeScene();
-      };
-    });
-  }
+  const dataUser = { username, password };
 
-  */
+  httpPost(`${url}/signin`,'json', dataUser, (respostaServidor) => {
+    if (respostaServidor.statusCode === 403){
+      changeScreen = 3;
+    } else {
+      homeScene();
+    };
+  });
+};

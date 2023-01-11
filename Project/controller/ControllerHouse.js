@@ -4,7 +4,8 @@ const { StatusCodes } = require('http-status-codes');
 /* Buy house */
 const ControllerBuyHouse = ((request, response) => {
     const { price } = request.body;
-    myConnectionDB.query(`UPDATE Houses SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${StudentID}`, 
+    const { id } = request.params;
+    myConnectionDB.query(`UPDATE Students SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${id}`, 
     (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({results});
