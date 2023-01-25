@@ -3,25 +3,31 @@ const { StatusCodes } = require('http-status-codes');
 
 /* Buy house */
 const ControllerBuyHouse = ((request, response) => {
-    const { price } = request.body;
+    const { price, idService } = request.body;
     const { id } = request.params;
     myConnectionDB.query(`UPDATE Students SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${id}`, 
     (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({results});
         } else {
-            response.status(StatusCodes.OK).json({results});
+            myConnectionDB.query(`UPDATE Houses SET StudentID = ${id} WHERE IdHouses = ${idService}`,[id],(error, results) => {
+                if(error){
+                    response.status(StatusCodes.BAD_REQUEST).json({ message: 'No system!'});
+                } else {
+                    response.status(StatusCodes.OK).json({results});
+                };
+            });
         };
     });
 });
 
 /* Insert new house */
 const ControllerCreateHouse = ((request, response) => {
-    const { username, email, password, age = 18, life = 100, emotion = 100, money = 500, level = 0 } = request.body;
-    const createPlayer = `INSERT INTO Houses SET ?`;
-    myConnectionDB.query(createPlayer, {username, email, password: functionHansh(password), age, life, emotion, money, level}, (error, results) => {
+    const { image, price, tipology } = request.body;
+    console.log(request.body);
+    myConnectionDB.query(`INSERT INTO Houses (Image, Price, Tipology) VALUES ('${image}','${price}','${tipology}')`, (error, results) => {
         if(error) {
-            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying create a new player'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error, message: 'Error when trying create a new player'});
         } else {
             response.status(StatusCodes.CREATED).json(results);
         };
@@ -29,7 +35,7 @@ const ControllerCreateHouse = ((request, response) => {
 });
 
 /* Get all houses */
-const ControllerGetAllHouse = ((request, response) => {
+const ControllerGetAllHouse = ((_, response) => {
     myConnectionDB.query(`SELECT * FROM Houses;`, (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get all player'});

@@ -1,39 +1,60 @@
+let textAge;
+let textName;
+let textLife;
+let textMoney;
+let textEmotion;
+
+let idStudent = localStorage.getItem("ID");
+
+function getAllData(idStudent){
+    setInterval(() => {
+        getDataPlayer(idStudent);
+        gameOver(idStudent);
+    }, 5000);
+};
+
+/* This function generate random event, it's for more dificulty */
+function generateRandomEvent(){
+    const randomEvent = Math.round(Math.random() * 4);
+    let event = '';
+    switch(randomEvent){
+        case 0:
+            event = 'Your boss is stressed out about you!';
+            break;
+        case 1:
+            event = 'A bad day in traffic!';
+            break;
+        case 2:
+            event = 'Noisy neighbors!';
+            break;
+        case 3:
+            event = 'Bad news. You didn`t pass the test!';
+            break;
+        case 4:
+            event = 'Conflicts in the relationship!';
+            break;
+        default:
+            break;      
+    };
+};
 
 function homePage(){
-    let textAge;
-    let textName;
-    let textLife;
-    let textMoney;
-    let textEmotion;
-
     background(backgroundImage);
-    
-    /*
-    /Level life
-    textLife = createP(life);
-    textLife.style('font-size', '30px');
-    textLife.style('color', '#ffffff');
-    textLife.position(165, -13);
-    
-    //Level emotion
-    textEmotion = createP(emotion);
-    textEmotion.style('font-size', '30px');
-    textEmotion.style('color', '#ffffff');
-    textEmotion.position(490, -13);
-    */
-    //Money
+    redraw();
+
+    // Money
     textMoney = createP(money);
     textMoney.style('font-size', '30px');
     textMoney.style('color', '#ffffff');
     textMoney.position(810, -13);
     
-    //Name
+    // Name
     textName = createP(username);
     textName.style('font-size', '25px');
     textName.style('color', '#ffffff');
     textName.position(1060, 0);
     
-    //Age
+    // Age
     textAge = createP(age);
     textAge.style('font-size', '25px');
     textAge.style('color', '#ffffff');
@@ -41,24 +62,17 @@ function homePage(){
 
     // Level life
     push();
-        fill("#ff0500");
-        rect(60, 20, life, 32, 20);
+        fill("#ff0000");
+        rect(70, 20, life, 32, 20);
     pop();
-    
+
     // Level emotion
     push();
         fill("#ffff00");
         rect(427, 20, emotion, 32, 20);
     pop();
-
-    /*       Forms of interaction       */
-    fill(255,255,0);
-    text(mouseX + "," + mouseY, 950, 368, 70, 80);
-    textSize(30);
     
-    //
     // Button close form
-    //
     const buttonClose = () => {
         if(mouseX >= 895 && mouseX <= 925 && mouseY >= 163 && mouseY <= 185){
             if(mouseIsPressed){
@@ -67,14 +81,12 @@ function homePage(){
             };
         };
     };
-    //
+
     // Test... after test must be changed!!!!
-    //
+
     if(forms > 0){
         buttonClose();
     };
-    //
-    //
     
     // Form job
     if(mouseX >= 43 && mouseX <= 150 && mouseY >= 565 && mouseY <= 650){
@@ -151,3 +163,60 @@ function homePage(){
             break;
     };
 };
+
+/*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+         Decrement life and emotion level
+««««««««««««««««««««««««««««««««««««««««««««««««*/
+function gameOver(idStudent){
+  const data = {idStudent};
+    fetch('/', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then((response) => {
+        if (response) {
+          return response.json();
+        } else {
+          throw new Error('Erro ao enviar dados para o servidor');
+        }
+      }).then((dataServer) => {
+        if(dataServer.stateGame === 'Game Over!'){
+          removeElements();
+          alert("Game Over!");
+        }
+      }).catch((erro) => {
+        console.error(erro);
+      });
+  };
+
+function getDataPlayer(idStudent){
+    fetch(`/getplayer/${idStudent}`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    }).then((response) => {
+        if (response) {
+            console.log(response);
+        return response.json();
+        } else {
+        throw new Error('Erro ao enviar dados para o servidor');
+        }
+    }).then((dataServer) => {
+        life = dataServer[0].Life;
+        money = `${dataServer[0].Money} €`;
+        emotion = dataServer[0].Emotion;
+        age = `Age: ${dataServer[0].Age}`;
+        username = `Name: ${dataServer[0].Username}`;
+        
+        if(dataServer.stateGame === 'Game Over!'){
+            removeElements();
+            alert("Game Over!");
+        };
+    }).catch((erro) => {
+        console.error(erro);
+    });
+};
+  

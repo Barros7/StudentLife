@@ -3,15 +3,15 @@
 ««««««««««««««««««««««««««««««««««««««««««««*/
 
 function formLogin(){
-  background(backgroundLogin);
+  background(backgroundForm);
   
   //Style input last name
-  usernameInput = createInput('', 'email');
-  usernameInput.attribute('placeholder', 'Enter your email');
-  usernameInput.style('color', 'white');
-  usernameInput.style('background-color', '#374592');
-  usernameInput.size(380,30);
-  usernameInput.position(705,320);
+  emailInput = createInput('', 'email');
+  emailInput.attribute('placeholder', 'Enter your email');
+  emailInput.style('color', 'white');
+  emailInput.style('background-color', '#374592');
+  emailInput.size(380,30);
+  emailInput.position(705,320);
   
   //Style input password
   passwordInput = createInput('', 'password');
@@ -20,57 +20,63 @@ function formLogin(){
   passwordInput.style('background-color', '#374592');
   passwordInput.size(380,30);
   passwordInput.position(705,370);
-
-  fill(20);
   
-  // Button to do login
-  if(mouseX >= 725 && mouseY >= 430 && mouseX <= 1080 && mouseY <= 475){
-    push();
-      noFill();
-      strokeWeight(3);
-      stroke("#CC00FF");
-      rect(725, 429, 355, 44, 10);
-    pop();
-    
-    if(mouseIsPressed){
-      sonOpenClick.play();
-      removeElements();
-      scene = 3;
-    };
-  };
+  // Button register
+  buttonRegister = createButton('Login');
+  buttonRegister.style('borderRadius', '10px');
+  buttonRegister.style('border', 'none');
+  buttonRegister.style('fontSize', '100%');
+  buttonRegister.style('fontWeight', 'bold');
+  buttonRegister.mouseOver( () => { buttonRegister.style('border', '1px #374592 solid'); });
+  buttonRegister.mouseOut( () => { buttonRegister.style('border', 'none'); });
+  buttonRegister.size(360,40);
+  buttonRegister.position(725/1,420/1);
+  buttonRegister.mousePressed(doLogin);
   
-  // Button to change scene to display register
-  if(mouseX >= 17 && mouseY >= 12 && mouseX <= 255 && mouseY <= 87){
-    push();
-      noFill();
-      strokeWeight(3);
-      stroke("#CC00FF");
-      rect(17, 13, 237, 75, 10);
-    pop();
-    
-    if(mouseIsPressed){
-      sonOpenClick.play();
-      removeElements();
-      scene = 2;
-    };
-  };
-  text(mouseX + "," + mouseY, 540, 368, 70, 80);
-  textSize(30);
+  // Button change to register
+  buttonChangeToSignUpScreen = createButton('Go register!');
+  buttonChangeToSignUpScreen.style('borderRadius', '10px');
+  buttonChangeToSignUpScreen.style('border', 'none');
+  buttonChangeToSignUpScreen.style('fontSize', '100%');
+  buttonChangeToSignUpScreen.style('fontWeight', 'bold');
+  buttonChangeToSignUpScreen.mouseOver( () => { buttonChangeToSignUpScreen.style('border', '1px #374592 solid'); });
+  buttonChangeToSignUpScreen.mouseOut( () => { buttonChangeToSignUpScreen.style('border', 'none'); });
+  buttonChangeToSignUpScreen.size(150,60);
+  buttonChangeToSignUpScreen.position(10/1,20/1);
+  buttonChangeToSignUpScreen.mousePressed( () => {
+    sonOpenClick.play();
+    removeElements();
+    formRegister();
+  });
 };
   
 /*»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
               Login user function
 ««««««««««««««««««««««««««««««««««««««««««««*/
 function doLogin(){
-  let username = usernameInput.value();
-  let password = passwordInput.value();
-  const dataUser = { username, password };
+  const dataUser = { email: emailInput.value(), password: passwordInput.value() };
 
-  httpPost(`${url}/signin`,'json', dataUser, (respostaServidor) => {
-    if (respostaServidor.statusCode === 403){
-      changeScreen = 3;
-    } else {
-      homeScene();
-    };
-  });
+  fetch('/signin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataUser)
+  }).then((response) => {
+      if (response) {
+        return response.json();
+      } else {
+        throw new Error('Erro ao enviar dados para o servidor');
+      }
+    }).then((dataServer) => {
+      if(dataServer.message === 'Welcome!'){
+        localStorage.setItem("ID", parseInt(dataServer.results[0].StudentID));
+        removeElements();
+        scene = 2;
+        homePage();
+        getAllData(localStorage.getItem("ID"));
+      }
+    }).catch((erro) => {
+      console.error(erro);
+    });
 };

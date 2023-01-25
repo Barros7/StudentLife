@@ -3,14 +3,20 @@ const { StatusCodes } = require('http-status-codes');
 
 /* Payment university */
 const ControllerPaymentUniversity = ((request, response) => {
-    const { price, idFaculty } = request.body;
-    const { idStudent } = request.params;
-    myConnectionDB.query(`UPDATE Students SET FacultyID = ${idFaculty}, Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${idStudent}`, 
+    const { price, idService } = request.body;
+    const { id } = request.params;
+    myConnectionDB.query(`UPDATE Students SET Money = IF(Money >= ${price}, Money - ${price}, Money) WHERE StudentID = ${id}`, 
     (error, results) => {
         if(error) {
-            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying pay the faculty'});
+            response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({results});
         } else {
-            response.status(StatusCodes.CREATED).json(results);
+            myConnectionDB.query(`UPDATE Students SET FacultyID = ${idService} WHERE StudentID = ${id}`,[idService],(error, results) => {
+                if(error){
+                    response.status(StatusCodes.BAD_REQUEST).json({ message: 'No system!'});
+                } else {
+                    response.status(StatusCodes.OK).json({results});
+                };
+            });
         };
     });
 });

@@ -2,9 +2,37 @@ const myConnectionDB = require("../config/ConfigDatabase");
 const functionHansh = require('../service/passwordHash');
 const { StatusCodes } = require('http-status-codes');
 
+/* Root route */
+const ControllerHome = (request, response) => {
+    const { idStudent } = request.body;
+    
+    myConnectionDB.query(`UPDATE Students SET Life = Life - 1, Emotion = Emotion - 1 WHERE StudentID = ?`,[idStudent], (error, updated) => {
+        if(error){
+            response.status(StatusCodes.BAD_REQUEST).json({ message: 'Server problem'});
+        } else {
+            myConnectionDB.query(`SELECT * FROM Students WHERE StudentID = ?`, [idStudent], (error, results) => {
+                if(error){
+                    response.status(StatusCodes.BAD_REQUEST).json({ message: 'Problem server!'});
+                } else {
+                    if(results[0].Life > 0 || results[0].Emotion > 0){
+                        response.status(StatusCodes.OK).json({ results });
+                    } else {
+                        myConnectionDB.query(`UPDATE Students SET Life = 0, Emotion = 0 WHERE StudentID = ?`,[idStudent], (error, results) => {
+                            if(error){
+                                response.status(StatusCodes.BAD_REQUEST).json({error: 'Error server!'});
+                            }
+                            const dataServer = { stateGame: 'Game Over!', results };
+                            response.status(StatusCodes.OK).json({ dataServer });
+                        });
+                    };
+                };
+            });
+        };
+    });
+};
+
 /* Authentication login */
 const ControllerSignIn = (request, response) => {
-    
     const { email, password } = request.body;
     if(email && password){
         let verifyUser = "SELECT * FROM Students WHERE Email = ? AND Password = ?";
@@ -15,7 +43,7 @@ const ControllerSignIn = (request, response) => {
                 if(results.length === 0 || !(functionHansh(password) === results[0].Password)){
                   response.status(StatusCodes.UNAUTHORIZED).json({ message: "Username or Password incorrect"});
                 } else {
-                    response.status(StatusCodes.OK).json({ message: "Welcome!"});
+                    response.status(StatusCodes.OK).json({ message: "Welcome!", results});
                 };
             };
         });
@@ -28,6 +56,7 @@ const ControllerCreatePlayer = (request, response) => {
     const createPlayer = `INSERT INTO Students SET ?`;
     myConnectionDB.query(createPlayer, {username, email, password: functionHansh(password), age, life, emotion, money, level}, (error, results) => {
         if(error) {
+            console.log(error);
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying create a new player'});
         } else {
             response.status(StatusCodes.CREATED).json(results);
@@ -49,21 +78,6 @@ const ControllerUpdatePlayer = (request, response) => {
     });
 };
 
-/*  
-    const ControllerGetPlayer = (request, response) => {
-        const {IdStudent} = request.params;
-        let decrement = `CREATE TRIGGER decrement_life AFTER INSERT ON Students FOR EACH ROW BEGIN UPDATE Students SET Life = Life - 1 WHERE StudentID = 1; END`
-        
-        myConnectionDB.query(decrement, (error, message) => {
-            if(error){
-                console.log(error);
-            }
-            console.log(message)
-            response.json({message})
-        });
-    }
-*/
-
 /* Get all player */
 const ControllerGetAllPlayers = (_, response) => {
     myConnectionDB.query(`SELECT * FROM Students;`, (error, results) => {
@@ -77,19 +91,19 @@ const ControllerGetAllPlayers = (_, response) => {
 
 /* Get player by your ID */
 const ControllerGetPlayer = (request, response) => {
-    const {IdStudent} = request.params;
-    myConnectionDB.query('SELECT * FROM Students WHERE StudentID = ?' , [parseInt(IdStudent)], (error, results) => {
+    const {idStudent} = request.params;
+    myConnectionDB.query('SELECT * FROM Students WHERE StudentID = ?' , [parseInt(idStudent)], (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to get player by ID'});
         } else {
-            response.status(StatusCodes.OK).json(results)
+            response.status(StatusCodes.OK).json(results);
         };
     });
 };
 
 /* Delete player by ID */
 const ControllerDeletePlayer = (request, response) => {
-    const {IdStudent} = request.params;
+    const { IdStudent } = request.params;
     myConnectionDB.query('DELETE FROM Students WHERE StudentID = ?', [parseInt(IdStudent)], (error, results) => {
         if(error) {
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying to delete player!'});
@@ -101,10 +115,11 @@ const ControllerDeletePlayer = (request, response) => {
 
 /* Export functions */
 module.exports = {
+    ControllerHome,
     ControllerSignIn,
+    ControllerGetPlayer,
+    ControllerDeletePlayer,
     ControllerCreatePlayer,
     ControllerUpdatePlayer,
-    ControllerGetAllPlayers,
-    ControllerGetPlayer,
-    ControllerDeletePlayer
+    ControllerGetAllPlayers
 };

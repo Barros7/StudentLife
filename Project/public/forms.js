@@ -17,10 +17,10 @@ const formDomicile = () => {
     image(imageFormDomicile, 425, 155);
     if(mouseX >= 815 && mouseX <= 886 && mouseY >= 305 && mouseY <= 325){
         if(mouseIsPressed){
-            payment(2, 125);
+            payment(localStorage.getItem("ID"), "house/rent-house", 1, 125);
         };
     } else if(mouseX >= 815 && mouseX <= 886 && mouseY >= 409 && mouseY <= 430){
-        payment(2, 125);
+        payment(localStorage.getItem("ID"), "house/rent-house", 2, 250);
     };
 };
 
@@ -52,7 +52,7 @@ const formFood = () => {
 /* MailBox for success alert */
 const mailBoxHouse = () => {
     forms = 7;
-    image(mailBoxImage, 425, 155);
+    image(mailBoxNosuccessImage, 425, 155);
     if(mouseX >= 645 && mouseX <= 715 && mouseY >= 388 && mouseY <= 409){
         if(mouseIsPressed){
             sonOpenClick.play();
@@ -60,4 +60,3 @@ const mailBoxHouse = () => {
         };
     };
 };
-

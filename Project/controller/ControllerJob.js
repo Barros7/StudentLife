@@ -1,17 +1,20 @@
 const myConnectionDB = require('../config/ConfigDatabase');
 const { StatusCodes } = require('http-status-codes');
 
-
 /* Sign contract job */
 const ControllerSignContractJob = ((request, response) => {
-    const { idCompany } = request.body;
+    const { idCompany, money } = request.body;
     const { idStudent } = request.params;
-    myConnectionDB.query(`UPDATE Students SET CompanyID = ${idCompany},  WHERE StudentID = ${idStudent}`, 
+    console.log("###");
+    myConnectionDB.query(`UPDATE Students SET CompanyID = ${idCompany} WHERE StudentID = ${idStudent}`, [],
     (error, results) => {
         if(error) {
+            console.log(error);
             response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Error when trying pay the faculty'});
         } else {
-            response.status(StatusCodes.CREATED).json(results);
+            myConnectionDB.query(`UPDATE Students SET Money = ${money}, CompanyID = ${idCompany}  WHERE StudentID = ${idStudent}`, (error, results) => {
+                response.status(StatusCodes.CREATED).json(results);
+            }); 
         };
     });
 });

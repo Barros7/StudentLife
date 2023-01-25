@@ -3,57 +3,59 @@ Form register
 ««««««««««««««««««««««««««««««««««««««««««««*/
 
 function formRegister(){
-  background(backgroundRegister);
+  background(backgroundForm);
 
-  //Style input username
-  emailInput = createInput('', 'text');
+  // Input e-mail address
+  emailInput = createInput('', 'email');
+  emailInput.attribute('placeholder', 'Enter your email address');
+  emailInput.style('color', 'white');
   emailInput.style('background-color', '#374592');
-  emailInput.style('color', '#ffffff');
   emailInput.size(380,30);
-  emailInput.position(705,height/2.5);
-  
-  //Style input e-mail
+  emailInput.position(705,320);
+
+  // Input username
   usernameInput = createInput('', 'text');
+  usernameInput.attribute('placeholder', 'Enter your username');
+  usernameInput.style('color', 'white');
   usernameInput.style('background-color', '#374592');
-  usernameInput.style('color', '#ffffff');
   usernameInput.size(380,30);
-  usernameInput.position(705,320);
+  usernameInput.position(705,270);
   
-  //Style input password
+  // Input password
   passwordInput = createInput('', 'password');
+  passwordInput.attribute('placeholder', 'Enter your password');
+  passwordInput.style('color', 'white');
   passwordInput.style('background-color', '#374592');
-  passwordInput.style('color', '#ffffff');
   passwordInput.size(380,30);
-  passwordInput.position(705,height/1.8);
+  passwordInput.position(705,370);
   
-  push();
-    fill(50);
-    text(mouseX + "," + mouseY, 540, 368, 70, 80);
-    textSize(30);
-  pop();
+  // Button register
+  buttonRegister = createButton('Register');
+  buttonRegister.style('borderRadius', '10px');
+  buttonRegister.style('fontSize', '100%');
+  buttonRegister.style('fontWeight', 'bold');
+  buttonRegister.style('border', 'none');
+  buttonRegister.mouseOver( () => { buttonRegister.style('border', '1px #374592 solid'); });
+  buttonRegister.mouseOut( () => { buttonRegister.style('border', 'none'); });
+  buttonRegister.size(360,40);
+  buttonRegister.position(725,420);
+  buttonRegister.mousePressed(doRegister);
 
-  if(mouseX >= 17 && mouseY >= 12 && mouseX <= 255 && mouseY <= 87){
-    push();
-      noFill();
-      strokeWeight(3);
-      stroke("#CC00FF");
-      rect(17, 13, 237, 75, 10);
-    pop();
-
-    if(mouseIsPressed){
-      removeElements();
-      scene = 1;
-    };
-  };
-
-  if(mouseX >= 725 && mouseY >= 430 && mouseX <= 1080 && mouseY <= 475){
-    push();
-      noFill();
-      strokeWeight(3);
-      stroke("#CC00FF");
-      rect(725, 429, 355, 44, 10);
-    pop();
-  };
+  // Button change to login
+  buttonChangeToSignUpScreen = createButton('Go login!');
+  buttonChangeToSignUpScreen.style('borderRadius', '10px');
+  buttonChangeToSignUpScreen.style('border', 'none');
+  buttonChangeToSignUpScreen.style('fontSize', '100%');
+  buttonChangeToSignUpScreen.style('fontWeight', 'bold');
+  buttonChangeToSignUpScreen.mouseOver( () => { buttonChangeToSignUpScreen.style('border', '1px #374592 solid'); });
+  buttonChangeToSignUpScreen.mouseOut( () => { buttonChangeToSignUpScreen.style('border', 'none'); });
+  buttonChangeToSignUpScreen.size(150,60);
+  buttonChangeToSignUpScreen.position(10/1,20/1);
+  buttonChangeToSignUpScreen.mousePressed( () => {
+    sonOpenClick.play();
+    removeElements();
+    formLogin();
+  });
 };
   
   
@@ -62,13 +64,26 @@ function formRegister(){
 ««««««««««««««««««««««««««««««««««««««««««««*/
 
 function doRegister(){
-  let email = emailInput.value();
-  let username = usernameInput.value();
-  let password = passwordInput.value();
+  dataUser = { email: emailInput.value(), username: usernameInput.value(), password: passwordInput.value() };
 
-  httpPost('/register','json', {email, username, password} ,(responseServer)=>{
-    Id_Student  = responseServer[0].Id_Student;
-    alert(responseServer[0].Id_Student)
-    homeScene();
-  });
+  fetch('/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataUser)
+  }).then((response) => {
+      if (response) {
+        return response.json();
+      } else {
+        throw new Error('Erro ao enviar dados para o servidor');
+      }
+    }).then((dataServer) => {
+      if(dataServer.affectedRows > 0){
+        removeElements();
+        formLogin();
+      }
+    }).catch((erro) => {
+      console.error(erro);
+    });
 };

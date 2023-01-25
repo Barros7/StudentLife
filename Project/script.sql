@@ -28,8 +28,8 @@ CREATE TABLE Students
   Money INT NOT NULL,
   Password VARCHAR(255) NOT NULL,
   Level INT NOT NULL,
-  FacultyID INT NOT NULL,
-  CompanyID INT NOT NULL,
+  FacultyID INT,
+  CompanyID INT,
   PRIMARY KEY (StudentID),
   FOREIGN KEY (FacultyID) REFERENCES Faculties(FacultyID),
   FOREIGN KEY (CompanyID) REFERENCES Companies(CompanyID)
